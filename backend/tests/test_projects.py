@@ -191,6 +191,18 @@ def test_public_project_list_and_detail_work() -> None:
     assert "contractor_profile_id" not in list_response.text
 
 
+def test_public_project_filter_by_contractor() -> None:
+    project, _ = create_project()
+
+    response = client.get(
+        f"/api/v1/projects?contractor_id={project['contractor_id']}"
+    )
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 1
+    assert response.json()["items"][0]["id"] == project["id"]
+
+
 def test_unknown_public_project_returns_404() -> None:
     response = client.get(f"/api/v1/projects/{uuid.uuid4()}")
 

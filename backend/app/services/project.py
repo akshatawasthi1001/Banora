@@ -146,6 +146,7 @@ def list_public_projects(
     state: str | None = None,
     project_type: ProjectType | None = None,
     project_status: ProjectStatus | None = None,
+    contractor_id: uuid.UUID | None = None,
     search: str | None = None,
 ) -> tuple[list[Project], int, int]:
     query = db.query(Project)
@@ -157,6 +158,8 @@ def list_public_projects(
         query = query.filter(Project.project_type == project_type)
     if project_status is not None:
         query = query.filter(Project.status == project_status)
+    if contractor_id is not None:
+        query = query.filter(Project.contractor_profile_id == contractor_id)
     if search:
         pattern = f"%{search}%"
         query = query.filter(

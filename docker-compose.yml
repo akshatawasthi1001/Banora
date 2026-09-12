@@ -38,6 +38,7 @@ services:
     command: npm run dev -- --hostname 0.0.0.0
     environment:
       WATCHPACK_POLLING: "true"
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
     ports:
       - "3000:3000"
     volumes:

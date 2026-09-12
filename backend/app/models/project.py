@@ -119,6 +119,10 @@ class Project(Base):
         nullable=False,
     )
 
+    @property
+    def contractor_id(self) -> uuid.UUID:
+        return self.contractor_profile_id
+
     contractor_profile: Mapped["ContractorProfile"] = relationship(
         "ContractorProfile", back_populates="projects"
     )

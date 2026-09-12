@@ -1,20 +1,12 @@
 import Link from "next/link";
 
+import { PublicNav } from "@/components/public-nav";
+
 export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#f4f1eb] text-[#1d2a25]">
       <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-6 sm:px-10 lg:px-14">
-        <nav className="flex items-center justify-between py-7" aria-label="Main navigation">
-          <Link className="text-2xl font-black tracking-[-0.08em] text-[#183c31]" href="/">
-            banora<span className="text-[#e26d42]">.</span>
-          </Link>
-          <a
-            className="hidden rounded-full border border-[#b9c2ba] px-5 py-2.5 text-sm font-semibold text-[#365048] transition hover:border-[#183c31] hover:bg-white sm:inline-block"
-            href="mailto:hello@banora.build"
-          >
-            Join the network
-          </a>
-        </nav>
+        <PublicNav />
 
         <section className="grid flex-1 items-center gap-14 pb-16 pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20 lg:pb-24 lg:pt-16">
           <div>
@@ -31,12 +23,12 @@ export default function Home() {
               See what they&apos;ve built, follow real progress, and connect with the people who can bring your next space to life.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <a className="rounded-full bg-[#183c31] px-7 py-4 text-center text-sm font-bold text-[#f4f1eb] transition hover:bg-[#285847]" href="mailto:hello@banora.build">
-                Explore Banora
-              </a>
-              <a className="rounded-full border border-[#aab8af] px-7 py-4 text-center text-sm font-bold text-[#365048] transition hover:border-[#183c31] hover:bg-white" href="mailto:hello@banora.build">
-                I&apos;m a contractor
-              </a>
+              <Link className="rounded-full bg-[#183c31] px-7 py-4 text-center text-sm font-bold text-[#f4f1eb] transition hover:bg-[#285847]" href="/contractors">
+                Find a contractor
+              </Link>
+              <Link className="rounded-full border border-[#aab8af] px-7 py-4 text-center text-sm font-bold text-[#365048] transition hover:border-[#183c31] hover:bg-white" href="/login">
+                List your work
+              </Link>
             </div>
           </div>
 

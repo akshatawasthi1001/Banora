@@ -96,6 +96,7 @@ def list_projects(
     state: str | None = None,
     project_type: ProjectType | None = None,
     status_filter: ProjectStatus | None = Query(default=None, alias="status"),
+    contractor_id: uuid.UUID | None = None,
     search: str | None = None,
     db: Session = Depends(get_db),
 ) -> ProjectListResponse:
@@ -107,6 +108,7 @@ def list_projects(
         state=state,
         project_type=project_type,
         project_status=status_filter,
+        contractor_id=contractor_id,
         search=search,
     )
     return ProjectListResponse(
