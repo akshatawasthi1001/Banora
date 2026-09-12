@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     db_name: str = "banora"
     db_user: str = "banora"
     db_password: str = ""
+    jwt_secret_key: str = "change-this-development-secret"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 60
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
