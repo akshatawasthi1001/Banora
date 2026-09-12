@@ -9,7 +9,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.config import get_settings
 from app.core.dependencies import require_role
 from app.core.security import create_access_token
 from app.db.base import Base
@@ -175,8 +174,9 @@ def test_jwt_validation_flow() -> None:
     assert missing.status_code == 401
 
     invalid_signature = create_access_token(subject=user_id, role=UserRole.CLIENT)
-    settings = get_settings()
-    invalid_signature = invalid_signature[:-1] + ("A" if invalid_signature[-1] != "A" else "B")
+    token_parts = invalid_signature.split(".")
+    token_parts[2] = ("A" if token_parts[2][0] != "A" else "B") + token_parts[2][1:]
+    invalid_signature = ".".join(token_parts)
     invalid_response = client.get(
         "/api/v1/auth/me",
         headers={"Authorization": f"Bearer {invalid_signature}"},

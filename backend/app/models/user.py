@@ -11,6 +11,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.models.contractor_profile import ContractorProfile
+    from app.models.review import Review
 
 
 class UserRole(str, enum.Enum):
@@ -45,6 +46,12 @@ class User(Base):
         "ContractorProfile",
         back_populates="user",
         uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    reviews: Mapped[list["Review"]] = relationship(
+        "Review",
+        back_populates="client",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )

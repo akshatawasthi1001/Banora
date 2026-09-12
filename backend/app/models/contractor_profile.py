@@ -18,6 +18,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.models.project import Project
+    from app.models.review import Review
 
 
 class ContractorProfile(Base):
@@ -71,6 +72,12 @@ class ContractorProfile(Base):
     )
     projects: Mapped[list["Project"]] = relationship(
         "Project",
+        back_populates="contractor_profile",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    reviews: Mapped[list["Review"]] = relationship(
+        "Review",
         back_populates="contractor_profile",
         cascade="all, delete-orphan",
         passive_deletes=True,
