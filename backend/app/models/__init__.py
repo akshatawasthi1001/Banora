@@ -3,6 +3,7 @@
 from app.models.contractor_profile import ContractorProfile
 from app.models.construction_stage import ConstructionStage, ConstructionStageStatus
 from app.models.media_asset import MediaAsset, MediaType
+from app.models.inquiry import Inquiry, InquiryStatus
 from app.models.project import Project, ProjectStatus, ProjectType
 from app.models.progress_update import ProgressUpdate
 from app.models.review import Review
@@ -14,6 +15,8 @@ __all__ = [
 	"ConstructionStageStatus",
 	"MediaAsset",
 	"MediaType",
+	"Inquiry",
+	"InquiryStatus",
 	"Project",
 	"ProjectStatus",
 	"ProjectType",

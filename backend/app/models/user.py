@@ -11,6 +11,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.models.contractor_profile import ContractorProfile
+    from app.models.inquiry import Inquiry
     from app.models.review import Review
 
 
@@ -51,6 +52,12 @@ class User(Base):
     )
     reviews: Mapped[list["Review"]] = relationship(
         "Review",
+        back_populates="client",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    inquiries: Mapped[list["Inquiry"]] = relationship(
+        "Inquiry",
         back_populates="client",
         cascade="all, delete-orphan",
         passive_deletes=True,

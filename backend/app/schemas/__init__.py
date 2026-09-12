@@ -22,6 +22,12 @@ from app.schemas.contractor import (
     ContractorProfileUpdate,
 )
 from app.schemas.media import MediaCreate, MediaListResponse, MediaResponse, MediaUpdate
+from app.schemas.inquiry import (
+    InquiryCreate,
+    InquiryListResponse,
+    InquiryResponse,
+    InquiryUpdateStatus,
+)
 from app.schemas.project import (
     ProjectCreate,
     ProjectListResponse,
@@ -50,6 +56,10 @@ __all__ = [
     "MediaListResponse",
     "MediaResponse",
     "MediaUpdate",
+    "InquiryCreate",
+    "InquiryListResponse",
+    "InquiryResponse",
+    "InquiryUpdateStatus",
     "ProgressUpdateCreate",
     "ProgressUpdateResponse",
     "ProgressUpdateUpdate",
