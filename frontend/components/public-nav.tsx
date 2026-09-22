@@ -18,7 +18,13 @@ export function PublicNav() {
       <Link href="/" className="text-2xl font-black tracking-[-0.08em] text-[#183c31]">banora<span className="text-[#e26d42]">.</span></Link>
       <div className="flex items-center gap-2 sm:gap-5">
         {links.map((link) => <Link key={link.href} href={link.href} className={`hidden text-sm font-bold transition sm:inline-block ${pathname === link.href ? "text-[#e26d42]" : "text-[#607068] hover:text-[#183c31]"}`}>{link.label}</Link>)}
-        {user?.role === "CONTRACTOR" ? <Link href="/dashboard" className="rounded-full bg-[#183c31] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#285847]">Dashboard</Link> : <Link href="/login" className="rounded-full border border-[#b9c2ba] px-4 py-2.5 text-xs font-bold text-[#365048] transition hover:border-[#183c31] hover:bg-white">Login</Link>}
+        {user?.role === "CONTRACTOR" ? (
+          <Link href="/dashboard" className={`rounded-full px-4 py-2.5 text-xs font-bold transition ${pathname.startsWith("/dashboard") ? "bg-[#e26d42] text-white" : "bg-[#183c31] text-white hover:bg-[#285847]"}`} aria-current={pathname.startsWith("/dashboard") ? "page" : undefined}>Dashboard</Link>
+        ) : user?.role === "CLIENT" ? (
+          <Link href="/dashboard/inquiries" className={`rounded-full px-4 py-2.5 text-xs font-bold transition ${pathname.startsWith("/dashboard") ? "bg-[#e26d42] text-white" : "bg-[#183c31] text-white hover:bg-[#285847]"}`} aria-current={pathname.startsWith("/dashboard") ? "page" : undefined}>My inquiries</Link>
+        ) : (
+          <Link href="/login" className="rounded-full border border-[#b9c2ba] px-4 py-2.5 text-xs font-bold text-[#365048] transition hover:border-[#183c31] hover:bg-white">Login</Link>
+        )}
       </div>
     </nav>
   );

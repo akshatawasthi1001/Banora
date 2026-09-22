@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { ApiRequestError, apiGet } from "@/lib/api/client";
+import { DashboardAccessPending } from "@/components/dashboard-shell";
 import { useRequireContractor } from "@/lib/auth-context";
 import type { ContractorProfile, Project, ProjectList, RatingSummary } from "@/lib/api/types";
 
@@ -39,7 +40,17 @@ export default function DashboardPage() {
     loadDashboard();
   }, [auth.isLoading, auth.user]);
 
-  if (isLoading || !auth.user) return null;
+  if (!auth.hasAccess || isLoading) {
+    return (
+      <DashboardAccessPending
+        label={
+          auth.isLoading
+            ? "Loading your workspace"
+            : "Redirecting to your workspace..."
+        }
+      />
+    );
+  }
   const ongoingProjects = projects.filter((project) => project.status === "ONGOING").length;
   const completedProjects = projects.filter((project) => project.status === "COMPLETED").length;
 
@@ -54,7 +65,7 @@ export default function DashboardPage() {
         <Link href="/dashboard/projects" className="rounded-xl bg-[#183c31] px-5 py-3.5 text-center text-sm font-bold text-white transition hover:bg-[#285847]">Manage projects ↗</Link>
       </div>
 
-      {error && <div className="mt-6 rounded-xl border border-[#e8b9a8] bg-[#fff3ed] px-4 py-3 text-sm font-semibold text-[#a3482d]">{error}</div>}
+      {error && <div className="mt-6 rounded-xl border border-[#e8b9a8] bg-[#fff3ed] px-4 py-3 text-sm font-semibold text-[#a3482d]" role="alert">{error}<button type="button" onClick={() => window.location.reload()} className="ml-3 underline underline-offset-2 hover:no-underline">Try again</button></div>}
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Dashboard statistics">
         {[

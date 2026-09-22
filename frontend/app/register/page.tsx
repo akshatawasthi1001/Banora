@@ -1,71 +1,74 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { ApiRequestError } from "@/lib/api/client";
-import { useAuth } from "@/lib/auth-context";
+import { registerUser } from "@/lib/api/auth";
+import type { UserRole } from "@/lib/api/types";
 
-export default function LoginPage() {
+const REGISTER_ROLE: UserRole = "CLIENT";
+
+export default function RegisterPage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, login } = useAuth();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const errorRef = useRef<HTMLParagraphElement | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (authLoading || !user) {
-      return;
+  function validate(): string | null {
+    if (!name.trim()) {
+      return "Enter your name to continue.";
     }
 
-    if (user.role === "CONTRACTOR") {
-      router.replace("/dashboard");
-    } else {
-      router.replace("/dashboard/inquiries");
+    if (!email.trim()) {
+      return "Enter your email to continue.";
     }
-  }, [authLoading, router, user]);
 
-  // Move focus to the error message so keyboard/screen-reader users are
-  // notified without a full re-render flash.
-  useEffect(() => {
-    if (error) {
-      errorRef.current?.focus();
+    if (password.length < 8) {
+      return "Your password must be at least 8 characters long.";
     }
-  }, [error]);
+
+    return null;
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
 
-    if (!email.trim() || !password) {
-      setError("Enter your email and password to continue.");
+    const validationError = validate();
+
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const currentUser = await login(email.trim(), password);
+      await registerUser({
+        email: email.trim(),
+        password,
+        role: REGISTER_ROLE,
+      });
 
-      if (currentUser.role === "CONTRACTOR") {
-        router.replace("/dashboard");
-      } else {
-        router.replace("/dashboard/inquiries");
-      }
+      router.replace("/login");
     } catch (requestError) {
-      if (
-        requestError instanceof ApiRequestError &&
-        requestError.status === 401
-      ) {
-        setError("The email or password is incorrect.");
+      if (requestError instanceof ApiRequestError) {
+        if (requestError.status === 409) {
+          setError("An account with this email already exists. Try signing in instead.");
+        } else if (requestError.status === 422) {
+          setError("Please check your details. Your password must be at least 8 characters long.");
+        } else {
+          setError(requestError.detail);
+        }
       } else if (requestError instanceof Error) {
         setError(requestError.message);
       } else {
-        setError("We could not sign you in. Please try again.");
+        setError("We could not create your account. Please try again.");
       }
     } finally {
       setIsSubmitting(false);
@@ -122,22 +125,35 @@ export default function LoginPage() {
             </div>
 
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#e26d42]">
-              Welcome back
+              Create account
             </p>
 
             <h2 className="mt-4 text-4xl font-black tracking-[-0.06em] text-[#183c31] sm:text-5xl">
-              Sign in to Banora.
+              Get started on Banora.
             </h2>
 
             <p className="mt-4 text-base leading-7 text-[#607068]">
-              Sign in to manage your projects or track your contractor
-              inquiries.
+              Create a client account to manage projects and reach trusted
+              contractors.
             </p>
 
             <form
               className="mt-10 space-y-5"
               onSubmit={handleSubmit}
             >
+              <label className="block text-sm font-bold text-[#365048]">
+                Name
+
+                <input
+                  className="mt-2 w-full rounded-xl border border-[#cdd2cb] bg-white px-4 py-3.5 text-base font-medium outline-none transition placeholder:text-[#a1aaa3] focus:border-[#183c31] focus:ring-2 focus:ring-[#dce7df]"
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="Your full name"
+                />
+              </label>
+
               <label className="block text-sm font-bold text-[#365048]">
                 Email
 
@@ -157,18 +173,16 @@ export default function LoginPage() {
                 <input
                   className="mt-2 w-full rounded-xl border border-[#cdd2cb] bg-white px-4 py-3.5 text-base font-medium outline-none transition placeholder:text-[#a1aaa3] focus:border-[#183c31] focus:ring-2 focus:ring-[#dce7df]"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Your password"
+                  placeholder="At least 8 characters"
                 />
               </label>
 
               {error && (
                 <p
-                  ref={errorRef}
-                  tabIndex={-1}
-                  className="rounded-xl border border-[#e8b9a8] bg-[#fff3ed] px-4 py-3 text-sm font-semibold text-[#a3482d] outline-none"
+                  className="rounded-xl border border-[#e8b9a8] bg-[#fff3ed] px-4 py-3 text-sm font-semibold text-[#a3482d]"
                   role="alert"
                 >
                   {error}
@@ -180,17 +194,17 @@ export default function LoginPage() {
                 type="submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Signing you in..." : "Sign in"}
+                {isSubmitting ? "Creating your account..." : "Create account"}
               </button>
             </form>
 
             <p className="mt-8 text-sm font-bold text-[#607068]">
-              New to Banora?{" "}
+              Already have an account?{" "}
               <Link
-                href="/register"
+                href="/login"
                 className="text-[#e26d42] transition hover:text-[#c95731]"
               >
-                Create account
+                Sign in
               </Link>
             </p>
 
