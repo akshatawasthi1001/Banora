@@ -258,7 +258,7 @@ export default function ReceivedInquiriesPage() {
                   </p>
 
                   <p className="mt-1 break-all text-xs font-semibold text-[#607068]">
-                    Client #{inquiry.client_id.slice(0, 8)}
+                    Requester reference: #{inquiry.client_id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
               </article>

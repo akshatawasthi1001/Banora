@@ -290,7 +290,7 @@ export default function InquiriesPage() {
                     </p>
                   ) : (
                     <p className="mt-1 break-all text-xs font-semibold text-[#607068]">
-                      Contractor #{inquiry.contractor_profile_id.slice(0, 8)}
+                      Contractor reference: #{inquiry.contractor_profile_id.slice(0, 8).toUpperCase()}
                     </p>
                   )}
                 </div>

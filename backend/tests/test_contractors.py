@@ -212,6 +212,28 @@ def test_state_filter_works() -> None:
     assert response.json()["items"][0]["state"] == "Florida"
 
 
+def test_city_filter_supports_partial_match() -> None:
+    create_profile("austin@example.com", city="Austin")
+    create_profile("dallas@example.com", city="Dallas")
+
+    response = client.get("/api/v1/contractors?city=aust")
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 1
+    assert response.json()["items"][0]["city"] == "Austin"
+
+
+def test_search_matches_location_fields() -> None:
+    create_profile("tex@example.com", name="Hill Homes", state="Texas")
+    create_profile("oh@example.com", name="Buckeye Builds", state="Ohio")
+
+    response = client.get("/api/v1/contractors?search=texas")
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 1
+    assert response.json()["items"][0]["name"] == "Hill Homes"
+
+
 def test_experience_minimum_filter_works() -> None:
     create_profile("junior@example.com", experience_years=3)
     create_profile("senior@example.com", experience_years=15)

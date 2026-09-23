@@ -151,9 +151,9 @@ def list_public_projects(
 ) -> tuple[list[Project], int, int]:
     query = db.query(Project)
     if city:
-        query = query.filter(Project.city.ilike(city))
+        query = query.filter(Project.city.ilike(f"%{city}%"))
     if state:
-        query = query.filter(Project.state.ilike(state))
+        query = query.filter(Project.state.ilike(f"%{state}%"))
     if project_type is not None:
         query = query.filter(Project.project_type == project_type)
     if project_status is not None:

@@ -80,9 +80,9 @@ def list_profiles(
 ) -> tuple[list[ContractorProfile], int, int]:
     query = db.query(ContractorProfile)
     if city:
-        query = query.filter(ContractorProfile.city.ilike(city))
+        query = query.filter(ContractorProfile.city.ilike(f"%{city}%"))
     if state:
-        query = query.filter(ContractorProfile.state.ilike(state))
+        query = query.filter(ContractorProfile.state.ilike(f"%{state}%"))
     if experience_years_min is not None:
         query = query.filter(
             ContractorProfile.experience_years >= experience_years_min
@@ -93,6 +93,8 @@ def list_profiles(
             or_(
                 ContractorProfile.name.ilike(search_pattern),
                 ContractorProfile.company_name.ilike(search_pattern),
+                ContractorProfile.city.ilike(search_pattern),
+                ContractorProfile.state.ilike(search_pattern),
             )
         )
 
