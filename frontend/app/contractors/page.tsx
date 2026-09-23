@@ -301,6 +301,7 @@ export default function ContractorsPage() {
           {totalPages > 1 && (
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 disabled={page <= 1 || isLoading}
                 onClick={() => goToPage(page - 1)}
                 className="rounded-lg border border-[#cdd2cb] px-3 py-2 text-xs font-bold text-[#365048] disabled:opacity-40"
@@ -309,6 +310,7 @@ export default function ContractorsPage() {
               </button>
               <span className="px-2 text-xs font-bold text-[#607068]">{page} / {totalPages}</span>
               <button
+                type="button"
                 disabled={page >= totalPages || isLoading}
                 onClick={() => goToPage(page + 1)}
                 className="rounded-lg border border-[#cdd2cb] px-3 py-2 text-xs font-bold text-[#365048] disabled:opacity-40"
@@ -349,6 +351,7 @@ export default function ContractorsPage() {
             </p>
             <p className="mt-3 text-sm text-[#607068]">Try a broader search or clear your filters.</p>
             <button
+              type="button"
               onClick={clearFilters}
               className="mt-6 rounded-lg bg-[#183c31] px-5 py-3 text-sm font-bold text-white"
             >

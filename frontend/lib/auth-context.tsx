@@ -37,7 +37,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null);
       return currentUser;
     } catch (requestError) {
-      window.localStorage.removeItem(TOKEN_KEY);
+      // Only a definitive 401 means the token is no longer valid; transient
+      // failures (network errors, 5xx) must not log the user out.
+      if (requestError instanceof ApiRequestError && requestError.status === 401) {
+        window.localStorage.removeItem(TOKEN_KEY);
+      } else if (!(requestError instanceof ApiRequestError)) {
+        // Network/backend unavailable: keep the token so a retry can recover.
+      }
       setUser(null);
 
       if (
@@ -71,8 +77,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(currentUser);
           setError(null);
         }
-      } catch {
-        window.localStorage.removeItem(TOKEN_KEY);
+      } catch (requestError) {
+        // Clear the stored token only when the backend confirms it is invalid
+        // (401). Transient errors keep the token so refresh can recover.
+        const isInvalidToken =
+          requestError instanceof ApiRequestError &&
+          requestError.status === 401;
+
+        if (isInvalidToken) {
+          window.localStorage.removeItem(TOKEN_KEY);
+        }
 
         if (!cancelled) {
           setUser(null);

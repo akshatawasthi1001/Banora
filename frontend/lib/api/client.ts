@@ -28,6 +28,25 @@ function getStoredToken(): string | null {
   return window.localStorage.getItem("banora_access_token");
 }
 
+/**
+ * FastAPI validation errors (422) return `detail` as an array of issue
+ * objects; other errors return a string. Convert any shape into a safe,
+ * human-readable message so raw objects never reach the UI.
+ */
+function extractErrorDetail(error: ApiError): string {
+  if (typeof error.detail === "string") {
+    return error.detail;
+  }
+  if (Array.isArray(error.detail)) {
+    const first = error.detail[0];
+    const field = first?.loc?.slice(1).join(".") ?? "input";
+    return first?.msg
+      ? `Invalid ${field}: ${first.msg}.`
+      : "Some fields have invalid values. Please check and try again.";
+  }
+  return error.message ?? "Something went wrong. Please try again.";
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
@@ -57,7 +76,7 @@ export async function apiFetch<T>(
     }
     throw new ApiRequestError(
       response.status,
-      error.detail ?? error.message ?? "Something went wrong. Please try again.",
+      extractErrorDetail(error),
     );
   }
 

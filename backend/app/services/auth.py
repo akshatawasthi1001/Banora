@@ -37,6 +37,9 @@ def register_user(db: Session, email: str, password: str, role: UserRole) -> Use
 def authenticate_user(db: Session, email: str, password: str) -> User:
     user = get_user_by_email(db, email)
     if user is None or not user.is_active:
+        # Verify against a throwaway hash so unknown emails cost the same
+        # CPU time as known ones. Prevents timing-based account enumeration.
+        hash_password("timing-equalizer-dummy-password")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",

@@ -124,6 +124,7 @@ export function DashboardShell({
           </p>
 
           <button
+            type="button"
             onClick={handleLogout}
             className="mt-5 text-sm font-semibold text-[#f0b39b] transition hover:text-white"
           >
@@ -142,6 +143,7 @@ export function DashboardShell({
           </Link>
 
           <button
+            type="button"
             onClick={handleLogout}
             className="text-sm font-bold text-[#365048]"
           >

@@ -186,8 +186,15 @@ export interface MediaCreateInput {
 }
 
 export interface ApiError {
-detail?: string;
+detail?: string | ApiErrorDetail[];
 message?: string;
+}
+
+/** FastAPI 422 responses return an array of these issue objects. */
+export interface ApiErrorDetail {
+  loc?: (string | number)[];
+  msg?: string;
+  type?: string;
 }
 
 export interface LoginResponse {

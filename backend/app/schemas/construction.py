@@ -11,7 +11,7 @@ from app.models.construction_stage import ConstructionStageStatus
 class ConstructionStageCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    name: str = Field(min_length=1)
+    name: str = Field(min_length=1, max_length=200)
     stage_order: int = Field(ge=1)
     status: ConstructionStageStatus = ConstructionStageStatus.NOT_STARTED
     started_at: datetime | None = None
@@ -31,7 +31,7 @@ class ConstructionStageCreate(BaseModel):
 class ConstructionStageUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    name: str | None = Field(default=None, min_length=1)
+    name: str | None = Field(default=None, min_length=1, max_length=200)
     stage_order: int | None = Field(default=None, ge=1)
     status: ConstructionStageStatus | None = None
     started_at: datetime | None = None
@@ -41,8 +41,8 @@ class ConstructionStageUpdate(BaseModel):
 class ProgressUpdateCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    title: str = Field(min_length=1)
-    description: str | None = None
+    title: str = Field(min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=10000)
     progress_percentage: float = Field(ge=0, le=100)
     update_date: date
 
@@ -50,8 +50,8 @@ class ProgressUpdateCreate(BaseModel):
 class ProgressUpdateUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    title: str | None = Field(default=None, min_length=1)
-    description: str | None = None
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=10000)
     progress_percentage: float | None = Field(default=None, ge=0, le=100)
     update_date: date | None = None
 

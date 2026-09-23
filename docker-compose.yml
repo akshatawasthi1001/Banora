@@ -21,7 +21,12 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      # Comma-separated list for production, e.g. "https://app.example.com".
+      CORS_ALLOW_ORIGINS: ${CORS_ALLOW_ORIGINS:-}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?JWT_SECRET_KEY must be set in .env}
+      AUTH_RATE_LIMIT_ATTEMPTS: ${AUTH_RATE_LIMIT_ATTEMPTS:-10}
+      AUTH_RATE_LIMIT_WINDOW_SECONDS: ${AUTH_RATE_LIMIT_WINDOW_SECONDS:-300}
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:-banora}
@@ -35,10 +40,12 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
     command: npm run dev -- --hostname 0.0.0.0
     environment:
       WATCHPACK_POLLING: "true"
-      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
     ports:
       - "3000:3000"
     volumes:

@@ -11,12 +11,12 @@ from app.models.project import ProjectStatus, ProjectType
 class ProjectCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    title: str = Field(min_length=1)
-    description: str | None = None
+    title: str = Field(min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=10000)
     project_type: ProjectType
-    city: str = Field(min_length=1)
-    state: str = Field(min_length=1)
-    country: str = Field(min_length=1)
+    city: str = Field(min_length=1, max_length=120)
+    state: str = Field(min_length=1, max_length=120)
+    country: str = Field(min_length=1, max_length=120)
     latitude: float | None = Field(default=None, ge=-90, le=90)
     longitude: float | None = Field(default=None, ge=-180, le=180)
     plot_area_sqft: float | None = Field(default=None, gt=0)
@@ -48,12 +48,12 @@ class ProjectCreate(BaseModel):
 class ProjectUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    title: str | None = Field(default=None, min_length=1)
-    description: str | None = None
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    description: str | None = Field(default=None, max_length=10000)
     project_type: ProjectType | None = None
-    city: str | None = Field(default=None, min_length=1)
-    state: str | None = Field(default=None, min_length=1)
-    country: str | None = Field(default=None, min_length=1)
+    city: str | None = Field(default=None, min_length=1, max_length=120)
+    state: str | None = Field(default=None, min_length=1, max_length=120)
+    country: str | None = Field(default=None, min_length=1, max_length=120)
     latitude: float | None = Field(default=None, ge=-90, le=90)
     longitude: float | None = Field(default=None, ge=-180, le=180)
     plot_area_sqft: float | None = Field(default=None, gt=0)

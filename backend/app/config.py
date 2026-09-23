@@ -13,9 +13,13 @@ class Settings(BaseSettings):
     db_name: str = "banora"
     db_user: str = "banora"
     db_password: str = ""
-    jwt_secret_key: str = "change-this-development-secret"
+    jwt_secret_key: str = ""
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 60
+    # Comma-separated list for multiple origins, e.g. "https://a.com,https://b.com".
+    cors_allow_origins: str = ""
+    auth_rate_limit_attempts: int = 10
+    auth_rate_limit_window_seconds: int = 300
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -29,6 +33,21 @@ class Settings(BaseSettings):
             port=self.db_port,
             database=self.db_name,
         )
+
+    @property
+    def cors_origins(self) -> list[str]:
+        """Allowed browser origins for credentialed CORS.
+
+        cors_allow_origins wins when set (production), otherwise the single
+        frontend_url is used (local development).
+        """
+        if self.cors_allow_origins.strip():
+            return [
+                origin.strip().rstrip("/")
+                for origin in self.cors_allow_origins.split(",")
+                if origin.strip()
+            ]
+        return [self.frontend_url]
 
 
 @lru_cache
